@@ -1,6 +1,6 @@
 #!/bin/sh
 
-start() {
+_start() {
   . "$(dirname "$0")/conf.sh"
   . "$(dirname "$0")/../online_wait.sh" ${ENDPOINT_ADDR}
 
@@ -48,7 +48,7 @@ start() {
   #. "$(dirname "$0")/traffic_rules_remove.sh"
 }
 
-stop() {
+_stop() {
   . "$(dirname "$0")/conf.sh"
   . "$(dirname "$0")/traffic_rules_remove.sh"
 
@@ -62,16 +62,16 @@ stop() {
 
 case "$1" in
   start)
-    start
+    _start
     ;;
 
   stop)
-    stop
+    _stop
     ;;
 
   restart)
-    stop
-    start
+    _stop
+    _start
     ;;
 
   *)
