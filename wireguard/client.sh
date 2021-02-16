@@ -1,8 +1,27 @@
 #!/bin/sh
 
+wait_online() {
+  ONLINE_ERR=1
+
+  while [ $ONLINE_ERR -ne 0 ]
+  do
+    ping -c 1 -W 1 $1 &> /dev/null
+    ONLINE_ERR=$?
+
+    if [ $ONLINE_ERR -ne 0 ]
+      then
+        echo "No internet connection, waiting..."
+        sleep 3
+    fi
+  done
+
+  echo "Internet connection established"
+}
+
 _start() {
   . "$(dirname "$0")/conf.sh"
-  . "$(dirname "$0")/../online_wait.sh" ${ENDPOINT_ADDR}
+
+  wait_online ${ENDPOINT_ADDR}
 
   printf '%s\n' \
   "[Interface]" \
