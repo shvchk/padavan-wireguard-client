@@ -54,7 +54,7 @@ _start() {
   echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
   echo 0 > /proc/sys/net/ipv4/conf/all/send_redirects
 
-  . "$(dirname "$0")/traffic_rules.sh"
+  "$(dirname "$0")/traffic_rules.sh" enable
 
   # Debugging info
   #ping -c3 1.1.1.1
@@ -64,12 +64,12 @@ _start() {
 
   # Test and revert before permanent deployment
   #sleep 120
-  #. "$(dirname "$0")/traffic_rules_remove.sh"
+  #"$(dirname "$0")/traffic_rules.sh" disable
 }
 
 _stop() {
   . "$(dirname "$0")/conf.sh"
-  . "$(dirname "$0")/traffic_rules_remove.sh"
+  "$(dirname "$0")/traffic_rules.sh" disable
 
   echo -n "Removing WireGuard interface... "
 
