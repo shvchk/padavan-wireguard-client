@@ -11,4 +11,4 @@
 #modprobe ip_set_list_set
 #modprobe xt_set
 
-#/etc/storage/wireguard/client.sh > /tmp/wireguard.log 2>&1
+#/etc/storage/wireguard/client.sh start > /tmp/wireguard.log 2>&1
