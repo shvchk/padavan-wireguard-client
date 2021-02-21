@@ -37,6 +37,7 @@ _enable() {
 
   iptables -I INPUT -i ${IFACE} -j ACCEPT
   iptables -t nat -I POSTROUTING -o ${IFACE} -j SNAT --to ${ADDR}
+  iptables -t mangle -I POSTROUTING -o ${IFACE} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 
   ip route add default dev ${IFACE} table 51
   ip rule add to ${ENDPOINT_ADDR} lookup main pref 30
