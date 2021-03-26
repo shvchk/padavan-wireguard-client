@@ -28,6 +28,13 @@ get_lan_prefix() {
   echo "${ip}/${len}"
 }
 
+get_wan_prefix() {
+  wan="$(nvram get wan_ifname)"
+  prefix="$(ip addr show "$wan" | grep -E '^ +inet' | awk '{print $2}')"
+
+  echo "$prefix"
+}
+
 _enable() {
   . "$(dirname "$0")/conf.sh"
   
@@ -42,6 +49,13 @@ _enable() {
   ip route add default dev ${IFACE} table 51
   ip rule add to ${ENDPOINT_ADDR} lookup main pref 30
   ip rule add to $(get_lan_prefix) lookup main pref 30
+
+  wan_prefix="$(get_wan_prefix)"
+
+  if [ -n "$wan_prefix" ]; then
+    ip rule add to $wan_prefix lookup main pref 30
+  fi
+
   ip rule add to all lookup 51 pref 40
   ip route flush cache
 
@@ -59,6 +73,13 @@ _disable() {
   ip route del default dev ${IFACE} table 51
   ip rule del to ${ENDPOINT_ADDR} lookup main pref 30
   ip rule del to $(get_lan_prefix) lookup main pref 30
+
+  wan_prefix="$(get_wan_prefix)"
+
+  if [ -n "$wan_prefix" ]; then
+    ip rule del to $wan_prefix lookup main pref 30
+  fi
+
   ip rule del to all lookup 51 pref 40
   ip route flush cache
 
