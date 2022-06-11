@@ -35,64 +35,55 @@ get_wan_prefix() {
   echo "$prefix"
 }
 
-_enable() {
-  . "$(dirname "$0")/conf.sh"
-  
-  _disable 2> /dev/null
-
-  echo -n "Setting up WireGuard traffic rules... "
-
-  iptables -I INPUT -i ${IFACE} -j ACCEPT
-  iptables -t nat -I POSTROUTING -o ${IFACE} -j SNAT --to ${ADDR}
-  iptables -t mangle -I POSTROUTING -o ${IFACE} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-
-  ip route add default dev ${IFACE} table 51
-  ip rule add to ${ENDPOINT_ADDR} lookup main pref 30
-  ip rule add to $(get_lan_prefix) lookup main pref 30
-
-  wan_prefix="$(get_wan_prefix)"
-
-  if [ -n "$wan_prefix" ]; then
-    ip rule add to $wan_prefix lookup main pref 30
-  fi
-
-  ip rule add to all lookup 51 pref 40
-  ip route flush cache
-
-  echo "done"
-}
-
-_disable() {
+traffic_rules() {
   . "$(dirname "$0")/conf.sh"
 
-  echo -n "Removing WireGuard traffic rules... "
+  case "$1" in
+    enable)
+      ip_action="add"
+      iptables_action="-I"
+      echo -n "Setting up WireGuard traffic rules... "
+      ;;
 
-  iptables -D INPUT -i ${IFACE} -j ACCEPT
-  iptables -t nat -D POSTROUTING -o ${IFACE} -j SNAT --to ${ADDR}
+    disable)
+      ip_action="del"
+      iptables_action="-D"
+      echo -n "Removing WireGuard traffic rules... "
+      ;;
 
-  ip route del default dev ${IFACE} table 51
-  ip rule del to ${ENDPOINT_ADDR} lookup main pref 30
-  ip rule del to $(get_lan_prefix) lookup main pref 30
+    *)
+      echo "Wrong argument: 'enable' or 'disable' expected. Doing nothing." >&2
+      return
+      ;;
+  esac
 
-  wan_prefix="$(get_wan_prefix)"
+  iptables $iptables_action INPUT -i $IFACE -j ACCEPT
+  iptables -t nat $iptables_action POSTROUTING -o $IFACE -j SNAT --to $ADDR
+  iptables -t mangle $iptables_action POSTROUTING -o $IFACE -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
+  ip route $ip_action default dev $IFACE table 51
+  ip rule $ip_action to $ENDPOINT_ADDR table main pref 30
+  ip rule $ip_action to $(get_lan_prefix) table main pref 30
+
+  wan_prefix=$(get_wan_prefix)
 
   if [ -n "$wan_prefix" ]; then
-    ip rule del to $wan_prefix lookup main pref 30
+    ip rule $ip_action to $wan_prefix table main pref 30
   fi
 
-  ip rule del to all lookup 51 pref 40
+  ip rule $ip_action to all table 51 pref 40
   ip route flush cache
-
   echo "done"
 }
 
 case "$1" in
   enable)
-    _enable
+    traffic_rules disable 2> /dev/null
+    traffic_rules enable
     ;;
 
   disable)
-    _disable
+    traffic_rules disable
     ;;
 
   *)
