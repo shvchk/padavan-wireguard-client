@@ -9,7 +9,10 @@
     mkdir /etc/storage/wireguard
     ```
 
-0. Скопируйте в неё файл `client.sh`
+0. Скопируйте в неё файл `client.sh`:
+    ```sh
+    wget /https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -P /etc/storage/wireguard
+    ```
 
 0. Скопируйте в неё конфигурацию клиента WireGuard.
 
