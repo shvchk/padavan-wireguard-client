@@ -11,7 +11,7 @@
 
 0. Скопируйте в неё файл `client.sh`:
     ```sh
-    wget /https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -P /etc/storage/wireguard
+    wget https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -P /etc/storage/wireguard
     ```
 
 0. Скопируйте в неё конфигурацию клиента WireGuard.
@@ -40,7 +40,7 @@
       echo -e "\n/etc/storage/wireguard/client.sh start" >> /etc/storage/started_script.sh
       ```
 
-    - Правил маршрутизации и файерволла:
+    - Правила маршрутизации и файерволла:
       ```sh
       echo -e "\n/etc/storage/wireguard/client.sh traffic-rules enable" >> /etc/storage/post_iptables_script.sh
       ```
