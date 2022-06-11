@@ -14,6 +14,11 @@
     wget https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -P /etc/storage/wireguard
     ```
 
+0. Сделайте его исполняемым:
+    ```sh
+    chmod +x /etc/storage/wireguard/client.sh
+    ```
+
 0. Скопируйте в неё конфигурацию клиента WireGuard.
 
     Имя файла конфигурации будет использовано в качестве имени интерфейса.  
