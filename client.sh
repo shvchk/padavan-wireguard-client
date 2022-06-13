@@ -92,7 +92,7 @@ parse_config() {
         allowed_ips="$allowed_ips $(get_valid_addrs "$val")"
         ;;
 
-      [*|PrivateKey|PublicKey|PresharedKey)
+      [*|PrivateKey|PublicKey|PresharedKey|PersistentKeepalive)
         add_to_filtered_config "$line"
         ;;
 
