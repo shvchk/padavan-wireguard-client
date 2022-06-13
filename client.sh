@@ -126,8 +126,6 @@ configure_traffic_rules() {
     client_addr="$(ip -o -4 addr list $iface | awk '{print $4}' | cut -d '/' -f 1)"
   fi
 
-  local action def_route
-
   def_route=0
   echo "$allowed_ips" | grep -q '/0' && def_route=1
 
