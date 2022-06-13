@@ -20,7 +20,6 @@ server_addr=""
 server_port=""
 allowed_ips=""
 
-traffic_rules_lock_file="/tmp/wireguard.traffic-rules.lock"
 traffic_rules_def_pref=5000
 traffic_rules_suppressor_pref=32751
 
@@ -126,7 +125,7 @@ parse_config() {
 }
 
 configure_traffic_rules() {
-  local action lock_action def_route
+  local action def_route
 
   if [ -z "$client_addr" ]; then
     parse_config "$filtered_config_file"
@@ -138,13 +137,10 @@ configure_traffic_rules() {
 
   case "$1" in
     enable)
+      configure_traffic_rules disable
+
       action="-I"
-      lock_action="touch"
       $log "Setting up WireGuard traffic rules..."
-      if [ -e "$traffic_rules_lock_file" ]; then
-        $log "Already set, skipping..."
-        return
-      fi
 
       ip route add default dev $iface table $routes_table
 
@@ -162,12 +158,7 @@ configure_traffic_rules() {
 
     disable)
       action="-D"
-      lock_action="rm"
       $log "Removing WireGuard traffic rules... "
-      if [ ! -e "$traffic_rules_lock_file" ]; then
-        $log "Already removed, skipping..."
-        return
-      fi
 
       ip route del table $routes_table || :
       ip rule del table $routes_table || :
@@ -188,8 +179,6 @@ configure_traffic_rules() {
 
   iptables -t nat $action POSTROUTING -o $iface -j SNAT --to $client_addr || :
   iptables -t mangle $action FORWARD ! -o br0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu || :
-
-  $lock_action "$traffic_rules_lock_file"
 }
 
 start() {
