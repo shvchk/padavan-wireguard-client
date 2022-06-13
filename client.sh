@@ -34,6 +34,10 @@ wait_online() {
   done
 }
 
+validate_iface_name() {
+  [ -z "$(echo "$1" | sed -E 's/^[a-zA-Z0-9_=+.-]{1,15}//')" ] || return 1
+}
+
 # Dumb filter for IPv4 or FQDN addresses (has dot),
 # since we don't support IPv6 yet
 get_valid_addrs() {
@@ -161,6 +165,7 @@ configure_traffic_rules() {
 start() {
   $log "Starting"
   ip link show dev "$iface" &> /dev/null && die "'$iface' already exists"
+  validate_iface_name "$iface" || die "Invalid interface name"
   parse_config "$config_file"
 
   $log "Setting up interface"
