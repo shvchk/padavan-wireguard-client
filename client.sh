@@ -211,6 +211,47 @@ stop() {
   rm "$filtered_config_file"
 }
 
+autostart() {
+  local script_path mark_start mark_end
+
+  script_path="${dir}/$(basename "$0")"
+  mark_start="### $script_path autostart: begin"
+  mark_end="### $script_path autostart: end"
+
+  case "$1" in
+    enable)
+      $log "Enabling autostart"
+      printf "%s\n" \
+      "" \
+      "$mark_start" \
+      "case \"\$1\" in" \
+      "  up) \"$script_path\" start ;;" \
+      "  down) \"$script_path\" stop ;;" \
+      "esac" \
+      "$mark_end" \
+      >> /etc/storage/post_wan_script.sh
+
+      printf "%s\n" \
+      "" \
+      "$mark_start" \
+      "\"$script_path\" traffic-rules enable" \
+      "$mark_end" \
+      >> /etc/storage/post_iptables_script.sh
+      ;;
+
+    disable)
+      $log "Disabling autostart"
+      sed -i "\|^$mark_start|,\|^$mark_end|d" /etc/storage/post_wan_script.sh
+      sed -i "\|^$mark_start|,\|^$mark_end|d" /etc/storage/post_iptables_script.sh
+      ;;
+
+    *)
+      $log "Wrong argument: 'enable' or 'disable' expected. Doing nothing." >&2
+      return
+      ;;
+  esac
+}
+
 case "$1" in
   start)
     start
@@ -227,6 +268,10 @@ case "$1" in
 
   traffic-rules)
     configure_traffic_rules "$2"
+    ;;
+
+  autostart)
+    autostart "$2"
     ;;
 
   *)
