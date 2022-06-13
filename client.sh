@@ -107,7 +107,7 @@ parse_config() {
   add_to_filtered_config "AllowedIPs=$(echo "$allowed_ips" | sed 's/ /,/g')"
 
   err=""
-  [ -z "$client_addr" ] && err="No valid client address in config file"
+  #[ -z "$client_addr" ] && err="No valid client address in config file"
   [ -z "$server_addr" ] && err="No valid server address in config file"
   [ -z "$allowed_ips" ] && err="No valid allowed IPs in config file"
   [ -n "$err" ] && die "$err"
@@ -118,7 +118,11 @@ parse_config() {
 }
 
 configure_traffic_rules() {
-  [ -n "$client_addr" ] || parse_config "$config"
+  if [ -z "$client_addr" ]; then
+    parse_config "$filtered_config_file"
+    client_addr="$(ip -o -4 addr list $iface | awk '{print $4}' | cut -d '/' -f 1)"
+  fi
+
   local action def_route
 
   def_route=0
