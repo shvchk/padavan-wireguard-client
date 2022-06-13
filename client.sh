@@ -58,6 +58,10 @@ trim_spaces() {
   echo "$1" | sed -E 's/ +/ /g;s/^ //;s/ $//'
 }
 
+trim_eof_newlines() {
+  sed -i -e :a -e '/^\n*$/{$d;N;};/\n$/ba' "$1"
+}
+
 add_to_filtered_config() {
   filtered_config="${filtered_config}${1}"$'\n'
 }
@@ -218,9 +222,15 @@ autostart() {
   mark_start="### $script_path autostart: begin"
   mark_end="### $script_path autostart: end"
 
+  autostart_target="/etc/storage/post_wan_script.sh"
+  traffic_rules_target="/etc/storage/post_iptables_script.sh"
+
   case "$1" in
     enable)
       $log "Enabling autostart"
+
+      trim_eof_newlines "$autostart_target"
+
       printf "%s\n" \
       "" \
       "$mark_start" \
@@ -229,20 +239,26 @@ autostart() {
       "  down) \"$script_path\" stop ;;" \
       "esac" \
       "$mark_end" \
-      >> /etc/storage/post_wan_script.sh
+      >> "$autostart_target"
+
+      trim_eof_newlines "$traffic_rules_target"
 
       printf "%s\n" \
       "" \
       "$mark_start" \
       "\"$script_path\" traffic-rules enable" \
       "$mark_end" \
-      >> /etc/storage/post_iptables_script.sh
+      >> "$traffic_rules_target"
       ;;
 
     disable)
       $log "Disabling autostart"
-      sed -i "\|^$mark_start|,\|^$mark_end|d" /etc/storage/post_wan_script.sh
-      sed -i "\|^$mark_start|,\|^$mark_end|d" /etc/storage/post_iptables_script.sh
+
+      sed -i "\|^$mark_start|,\|^$mark_end|d" "$autostart_target"
+      sed -i "\|^$mark_start|,\|^$mark_end|d" "$traffic_rules_target"
+
+      trim_eof_newlines "$autostart_target"
+      trim_eof_newlines "$traffic_rules_target"
       ;;
 
     *)
