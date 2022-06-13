@@ -165,6 +165,8 @@ configure_traffic_rules() {
         return
       fi
 
+      ip route del table $routes_table || :
+      ip rule del table $routes_table || :
       ip rule del pref $traffic_rules_suppressor_pref || :
       ;;
 
@@ -175,11 +177,13 @@ configure_traffic_rules() {
   esac
 
   if [ $def_route = 1 ]; then
-    #iptables $action PREROUTING ! -i $iface -d $client_addr -m addrtype ! --src-type LOCAL -j DROP
-    iptables -t mangle $action POSTROUTING -m mark --mark $fwmark -p udp -j CONNMARK --save-mark
-    iptables -t mangle $action PREROUTING -p udp -j CONNMARK --restore-mark
+    #iptables $action PREROUTING ! -i $iface -d $client_addr -m addrtype ! --src-type LOCAL -j DROP || :
+    iptables -t mangle $action POSTROUTING -m mark --mark $fwmark -p udp -j CONNMARK --save-mark || :
+    iptables -t mangle $action PREROUTING -p udp -j CONNMARK --restore-mark || :
   fi
 
+  iptables -t nat $action POSTROUTING -o $iface -j SNAT --to $client_addr || :
+  iptables -t mangle $action FORWARD ! -o br0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu || :
 
   $lock_action "$traffic_rules_lock_file"
 }
