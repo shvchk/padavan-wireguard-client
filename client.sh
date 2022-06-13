@@ -4,8 +4,8 @@ set -euo pipefail
 log="logger -t wireguard"
 
 dir="$(cd -- "$(dirname "$0")" &> /dev/null && pwd)"
-config="$(ls -v "${dir}"/*conf | head -1)"
-iface="$(basename "$config" .conf)" # TODO: validate interface name
+config_file="$(ls -v "${dir}"/*conf | head -1)"
+iface="$(basename "$config_file" .conf)"
 wan="$(ip route | grep 'default via' | head -1 | awk '{print $5}')"
 wan_mtu="$(cat /sys/class/net/${wan}/mtu)"
 mtu=$(( wan_mtu > 0 ? wan_mtu - 80 : 1500 - 80 ))
@@ -104,7 +104,9 @@ parse_config() {
   [ -z "$allowed_ips" ] && err="No valid allowed IPs in config file"
   [ -n "$err" ] && die "$err"
 
-  [ "$1" = "$config" ] && echo "$filtered_config" > "$filtered_config_file"
+  if [ "$1" = "$config_file" ]; then
+    echo "$filtered_config" > "$filtered_config_file"
+  fi
 }
 
 configure_traffic_rules() {
@@ -159,7 +161,7 @@ configure_traffic_rules() {
 start() {
   $log "Starting"
   ip link show dev "$iface" &> /dev/null && die "'$iface' already exists"
-  parse_config "$config"
+  parse_config "$config_file"
 
   $log "Setting up interface"
   modprobe wireguard
