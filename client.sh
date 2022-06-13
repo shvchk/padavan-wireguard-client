@@ -125,11 +125,13 @@ parse_config() {
 }
 
 configure_traffic_rules() {
-  local action def_route
+  local client_cidr action def_route
 
   if [ -z "$client_addr" ]; then
     parse_config "$filtered_config_file"
-    client_addr="$(ip -o -4 addr list $iface | awk '{print $4}' | cut -d '/' -f 1)"
+    client_cidr="$(ip -o -4 addr list $iface | awk '{print $4}')"
+    client_addr="$(echo $client_cidr | cut -d '/' -f 1)"
+    client_mask="$(echo $client_cidr | cut -d '/' -f 2)"
   fi
 
   def_route=0
