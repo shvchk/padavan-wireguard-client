@@ -54,6 +54,10 @@ trim_spaces() {
   echo "$1" | sed -E 's/ +/ /g;s/^ //;s/ $//'
 }
 
+add_to_filtered_config() {
+  filtered_config="${filtered_config}${1}"$'\n'
+}
+
 parse_config() {
   $log "Parsing config"
   dos2unix -u "$1"
@@ -81,7 +85,7 @@ parse_config() {
         addr="$(get_valid_addrs "$val" | cut -d ' ' -f 1)"
         server_addr="$(echo "$addr" | cut -d ':' -f 1)"
         server_port="$(echo "$addr" | cut -d ':' -f 2)"
-        filtered_config="$filtered_config${key}=${server_addr}:${server_port}"$'\n'
+        add_to_filtered_config "${key}=${server_addr}:${server_port}"
         ;;
 
       AllowedIPs)
@@ -89,7 +93,7 @@ parse_config() {
         ;;
 
       [*|PrivateKey|PublicKey|PresharedKey)
-        filtered_config="$filtered_config${line}"$'\n'
+        add_to_filtered_config "$line"
         ;;
 
       *)
@@ -100,7 +104,7 @@ parse_config() {
   done < "$1"
 
   allowed_ips="$(trim_spaces "$allowed_ips")"
-  filtered_config="$filtered_config${key}=$(echo "$allowed_ips" | sed 's/ /,/g')"$'\n'
+  add_to_filtered_config "AllowedIPs=$(echo "$allowed_ips" | sed 's/ /,/g')"
 
   err=""
   [ -z "$client_addr" ] && err="No valid client address in config file"
