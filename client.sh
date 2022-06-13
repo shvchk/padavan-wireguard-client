@@ -205,8 +205,8 @@ start() {
 }
 
 stop() {
-  rmmod wireguard &> /dev/null
   configure_traffic_rules disable
+  ip link del dev $iface
 }
 
 case "$1" in
