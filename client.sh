@@ -205,6 +205,7 @@ start() {
 }
 
 stop() {
+  $log "Stopping"
   configure_traffic_rules disable
   ip link del dev $iface
   rm "$filtered_config_file"
@@ -234,4 +235,5 @@ case "$1" in
     ;;
 esac
 
+$log "Done"
 exit 0
