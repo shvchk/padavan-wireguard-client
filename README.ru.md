@@ -2,7 +2,43 @@
 
 Один исполняемый файл, не требующий никакой настройки, только стандартный файл конфигурации WireGuard.
 
-0. Вам понадобится прошивка с поддержкой WireGuard, например [padavan-ng от Алексея](https://gitlab.com/dm38/padavan-ng), установленная и работающая на роутере
+### Необходимые условия
+
+0. Прошивка с поддержкой WireGuard, например [padavan-ng от Алексея](https://gitlab.com/dm38/padavan-ng), установленная и работающая на роутере
+
+0. Возможность выполнять команды на роутере: предпочтительнее через SSH, но можно и в веб-интерфейсе роутера.
+
+    Включите SSH  в веб-интерфейсе роутера: `Администрирование` > `Сервисы` > `Включить SSH-сервер?` > `Да`
+
+    Для доступа по SSH используются те же данные, что и для входа в веб-интерфейс.
+
+    В Linux, Mac OS и Windows 10+ SSH клиент обычно предустановлен, просто откройте терминал и выполните подключение:
+    ```sh
+    ssh admin@192.168.1.1
+    ```
+
+    В более старых версиях Windows можно использовать [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty), [Tabby](https://tabby.sh) или [другие SSH клиенты](https://alternativeto.net/software/putty/?feature=ssh-client&license=free&platform=windows).
+
+    При установленном SSH клиенте часто можно подключиться, просто перейдя по ссылке 
+    [ssh://admin@192.168.1.1](ssh://admin@192.168.1.1)
+
+
+0. Возможность копировать файлы на роутер. Обычно для этого используется SFTP, он работает на базе SSH.
+
+    В Windows можно использовать [WinSCP](https://winscp.net), в Mac OS — [Cyberduck](https://cyberduck.io). В Linux поддержка SFTP обычно встроена в ваш файловый менеджер, загляните в раздел "Сеть" или "Другие места".
+
+    Подключиться обычно можно, просто перейдя по ссылке
+    [sftp://admin@192.168.1.1/etc/storage/](sftp://admin@192.168.1.1/etc/storage/)
+
+
+### Установка и настройка WireGuard клиента
+
+Большинство операций я буду описывать, используя команды, поскольку это исключает неверную интерпретацию. Но операции с файлами / папками, конечно, можно также выполнить и через SFTP.
+
+0. Если у вас была установлена предыдущая версия клиента, состоявшая из нескольких файлов, её требуется отключить / удалить. Пока можно просто переместить папку с ней, не удаляя:
+    ```sh
+    mv /etc/storage/wireguard /etc/storage/wireguard.bak
+    ```
 
 0. Создайте папку `wireguard` в `/etc/storage` на роутере:
     ```sh
@@ -11,7 +47,7 @@
 
 0. Скопируйте в неё файл `client.sh`:
     ```sh
-    wget https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -P /etc/storage/wireguard
+    wget https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
 0. Сделайте его исполняемым:
@@ -31,24 +67,20 @@
     /etc/storage/wireguard/client.sh start
     ```
 
-0. Проверьте, работает ли интернет на ваших устройствах
+0. Проверьте, работает ли интернет на роутере и ваших устройствах:
+    ```sh
+    ping -c 3 -W 1 1.1.1.1
+    ```
 
-0. В случае проблем, выключите клиент WireGuard на роутере:
+0. В случае проблем, выключите клиент WireGuard:
     ```sh
     /etc/storage/wireguard/client.sh stop
     ```
 
 0. После того, как вы убедились, что всё хорошо работает, настройте автозапуск:
-
-    - Клиент Wireguard:
-      ```sh
-      echo -e "\n/etc/storage/wireguard/client.sh start" >> /etc/storage/started_script.sh
-      ```
-
-    - Правила маршрутизации и файерволла:
-      ```sh
-      echo -e "\n/etc/storage/wireguard/client.sh traffic-rules enable" >> /etc/storage/post_iptables_script.sh
-      ```
+    ```sh
+    /etc/storage/wireguard/client.sh autostart enable
+    ```
 
 0. Сохраните изменения:
     ```sh
