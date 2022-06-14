@@ -29,7 +29,9 @@
       В более старых версиях Windows можно использовать [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty), [Tabby](https://tabby.sh) или [другие SSH клиенты](https://alternativeto.net/software/putty/?feature=ssh-client&license=free&platform=windows).
 
       При установленном SSH клиенте часто можно подключиться, просто перейдя по ссылке 
-      `ssh://admin@192.168.1.1`  
+      ```
+      ssh://admin@192.168.1.1
+      ```
       Вставьте её в адресную строку браузера вручную и нажмите Enter — GitHub не позволяет делать активные ссылки с нестандартными протоколами.
     </details>
 
@@ -41,7 +43,9 @@
       В Windows можно использовать [WinSCP](https://winscp.net), в Mac OS — [Cyberduck](https://cyberduck.io). В Linux поддержка SFTP обычно встроена в ваш файловый менеджер, загляните в раздел "Сеть" или "Другие места".
 
       Подключиться обычно можно, просто перейдя по ссылке
-      `sftp://admin@192.168.1.1/etc/storage/`  
+      ```
+      sftp://admin@192.168.1.1/etc/storage/
+      ```
       Вставьте её в адресную строку браузера вручную и нажмите Enter — GitHub не позволяет делать активные ссылки с нестандартными протоколами.
     </details>
 
