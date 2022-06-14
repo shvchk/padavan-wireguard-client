@@ -202,7 +202,7 @@ start() {
 stop() {
   $log "Stopping"
   configure_traffic_rules disable
-  ip link del dev $iface
+  ip link del $iface
   rm "$filtered_config_file"
 }
 
