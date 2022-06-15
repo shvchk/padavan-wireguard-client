@@ -43,7 +43,9 @@ Single executable file only requiring standard WireGuard config file to work.
       On Windows you could use [WinSCP](https://winscp.net), for Mac OS there is [Cyberduck](https://cyberduck.io). Linux file managers usually support SFTP out of the box, look for "Network" or "Other places" section.
 
       You can connect just by following this link:
-      `sftp://admin@192.168.1.1/etc/storage/`  
+      ```
+      sftp://admin@192.168.1.1/etc/storage/
+      ```
       Paste it into your browser's address bar manually and hit Enter, since GitHub doees not allow active links with non-standard protocols.
     </details>
 
