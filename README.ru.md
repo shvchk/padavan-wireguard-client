@@ -6,6 +6,7 @@
 
 Один исполняемый файл, требующий для работы только стандартный файл конфигурации WireGuard.
 
+
 ### Необходимые условия
 
 0. Прошивка с поддержкой WireGuard.  
@@ -48,6 +49,7 @@
       ```
       Вставьте её в адресную строку браузера вручную и нажмите Enter — GitHub не позволяет делать активные ссылки с нестандартными протоколами.
     </details>
+
 
 ### Установка и настройка WireGuard клиента
 
@@ -105,3 +107,13 @@
     ```
 
 0. Перезагрузите роутер
+
+
+### Удаление
+
+```sh
+/etc/storage/wireguard/client.sh stop
+/etc/storage/wireguard/client.sh autostart disable
+rm -rf /etc/storage/wireguard
+mtd_storage.sh save
+```
