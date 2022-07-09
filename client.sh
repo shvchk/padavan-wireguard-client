@@ -139,10 +139,11 @@ configure_traffic_rules() {
 
   case "$1" in
     enable)
+      ip link show $iface &> /dev/null || { $log "Nonexistent interface $iface"; return 1; }
       configure_traffic_rules disable
 
       action="-I"
-      $log "Setting up WireGuard traffic rules..."
+      $log "Setting up traffic rules..."
 
       ip route add default dev $iface table $routes_table
 
@@ -160,9 +161,9 @@ configure_traffic_rules() {
 
     disable)
       action="-D"
-      $log "Removing WireGuard traffic rules... "
+      $log "Removing traffic rules... "
 
-      ip route del table $routes_table || :
+      ip route del default table $routes_table || :
       ip rule del table $routes_table || :
       ip rule del pref $traffic_rules_suppressor_pref || :
       ;;
@@ -179,6 +180,7 @@ configure_traffic_rules() {
     iptables -t mangle $action PREROUTING -p udp -j CONNMARK --restore-mark || :
   fi
 
+  iptables $action INPUT -i $iface -j ACCEPT || :
   iptables -t nat $action POSTROUTING -o $iface -j SNAT --to $client_addr || :
   iptables -t mangle $action FORWARD ! -o br0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu || :
 }
