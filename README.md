@@ -21,8 +21,3 @@
       - or via SSH to `/etc/storage/post_iptables_script.sh`: `echo -e "\n/etc/storage/wireguard/traffic_rules.sh enable" >> /etc/storage/post_iptables_script.sh`
 6. Save changes: `mtd_storage.sh save`
 7. Restart router
-
-
-### RU
-
-[README.ru.md](README.ru.md)
