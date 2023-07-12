@@ -120,7 +120,9 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
 
 ### Add exceptions
 
-You can add exceptions in `/etc/storage/started_script.sh` (web UI: `Customization` > `Scripts` > `Run After Router Started`) or `/etc/storage/post_iptables_script.sh` (web UI: `Customization` > `Scripts` > `Run After Firewall Rules Restarted`).
+You can add exceptions in one of these files:
+- `/etc/storage/started_script.sh` (web UI: `Customization` > `Scripts` > `Run After Router Started`)
+- `/etc/storage/post_iptables_script.sh` (web UI: `Customization` > `Scripts` > `Run After Firewall Rules Restarted`)
 
 First add a tiny helper function:
 ```sh
