@@ -1,7 +1,7 @@
 <p align="right"><a href="README.md">English</a> | Русский</p>
 
 
-## Клиент WireGuardдля роутеров на прошивке Padavan
+## Клиент WireGuard для роутеров на прошивке Padavan
 
 Один исполняемый файл, требующий для работы только стандартный файл конфигурации WireGuard.
 
