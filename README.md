@@ -23,4 +23,6 @@
 7. Restart router
 
 
-### RU → [README.ru.md](README.ru.md)
+### RU
+
+[README.ru.md](README.ru.md)
