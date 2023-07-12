@@ -109,10 +109,12 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
 ### Uninstall
 
 ```sh
-/etc/storage/wireguard/client.sh stop
-/etc/storage/wireguard/client.sh autostart disable
-rm -rf /etc/storage/wireguard
-mtd_storage.sh save
+(
+  /etc/storage/wireguard/client.sh stop
+  /etc/storage/wireguard/client.sh autostart disable
+  rm -rf /etc/storage/wireguard
+  mtd_storage.sh save
+)
 ```
 
 
@@ -128,7 +130,7 @@ direct() {
 }
 ```
 
-You can then use it like this: `direct <to|from> <IP-address|subnet>`. E.g.:
+You can then use it like this: `direct <to|from> <IP-address|subnet>`. Examples:
 
 - Route traffic **to** IP 9.9.9.9 directly: `direct to 9.9.9.9`
 - Route traffic **to** subnet 1.2.0.0/16 directly: `direct to 1.2.0.0/16`

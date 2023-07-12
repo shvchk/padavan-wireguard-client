@@ -111,10 +111,12 @@
 ### Удаление
 
 ```sh
-/etc/storage/wireguard/client.sh stop
-/etc/storage/wireguard/client.sh autostart disable
-rm -rf /etc/storage/wireguard
-mtd_storage.sh save
+(
+  /etc/storage/wireguard/client.sh stop
+  /etc/storage/wireguard/client.sh autostart disable
+  rm -rf /etc/storage/wireguard
+  mtd_storage.sh save
+)
 ```
 
 
