@@ -1,6 +1,5 @@
-<p align="center">English | <a href="README.ru.md">Русский</a></p>
+<p align="right">English | <a href="README.ru.md">Русский</a></p>
 
----
 
 ## WireGuard client for routers with Padavan based firmware
 
@@ -105,3 +104,40 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
     ```
 
 0. Restart router
+
+
+### Uninstall
+
+```sh
+/etc/storage/wireguard/client.sh stop
+/etc/storage/wireguard/client.sh autostart disable
+rm -rf /etc/storage/wireguard
+mtd_storage.sh save
+```
+
+
+### Add exceptions
+
+You can add exceptions in `/etc/storage/started_script.sh` (web UI: `Customization` > `Scripts` > `Run After Router Started`) или `/etc/storage/post_iptables_script.sh` (web UI: `Customization` > `Scripts` > `Run After Firewall Rules Restarted`).
+
+First add a tiny helper function:
+```sh
+direct() {
+  ip rule del $1 $2 || :
+  ip rule add $1 $2 table main pref 30
+}
+```
+
+You can then use it like this: `direct <to|from> <IP-address|subnet>`. E.g.:
+
+- Route traffic **to** IP 9.9.9.9 directly: `direct to 9.9.9.9`
+- Route traffic **to** subnet 1.2.0.0/16 directly: `direct to 1.2.0.0/16`
+- Route traffic **from** IP 192.168.1.11 directly: `direct from 192.168.1.11`
+- Route traffic **from** subnet 10.11.12.0/24 directly: `direct to 10.11.12.0/24`
+
+You can add as many of these rules as you like, one per line.
+
+If you changed files via SSH, don't forget to save changes:
+```sh
+mtd_storage.sh save
+```
