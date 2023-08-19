@@ -66,7 +66,7 @@
 
 0. Скопируйте в неё файл `client.sh`:
     ```sh
-    wget https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -O /etc/storage/wireguard/client.sh
+    wget https://github.com/shvchk/padavan-wireguard-client/raw/main/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
 0. Сделайте его исполняемым:

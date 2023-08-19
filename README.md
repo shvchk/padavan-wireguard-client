@@ -64,7 +64,7 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
 
 0. Copy `client.sh` to it:
     ```sh
-    wget https://github.com/shvchk/padavan-wireguard-client/raw/dev/client.sh -O /etc/storage/wireguard/client.sh
+    wget https://github.com/shvchk/padavan-wireguard-client/raw/main/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
 0. Make it executable:
