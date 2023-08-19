@@ -3,7 +3,7 @@
 ## Клиент WireGuard для роутеров на прошивке Padavan
 
 0. Вам понадобится прошивка с поддержкой WireGuard, например [padavan-ng от Алексея](https://gitlab.com/dm38/padavan-ng), установленная и работающая на роутере
-1. Клонируйте этот репозиторий: `git clone https://github.com/shvchk/padavan-wireguard-client.git`
+1. Клонируйте этот репозиторий: `git clone -b legacy https://github.com/shvchk/padavan-wireguard-client.git`
 2. Измените `wireguard/conf.sh` в соответствии с желаемой конфигурацией
 3. Загрузите папку `wireguard` в `/etc/storage` на роутере: `scp -r wireguard admin@192.168.1.1:/etc/storage`
 4. Тестирование:

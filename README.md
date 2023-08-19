@@ -3,7 +3,7 @@
 ## WireGuard client for routers with Padavan based firmware
 
 0. You will need a firmware with WireGuard support, like [padavan-ng from Alexey](https://gitlab.com/dm38/padavan-ng), on your router up and running
-1. Clone this repo: `git clone https://github.com/shvchk/padavan-wireguard-client.git`
+1. Clone this repo: `git clone -b legacy https://github.com/shvchk/padavan-wireguard-client.git`
 2. Edit `wireguard/conf.sh` to match your desired configuration
 3. Upload `wireguard` directory to `/etc/storage` on your router: `scp -r wireguard admin@192.168.1.1:/etc/storage`
 4. Test:
