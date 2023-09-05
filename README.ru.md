@@ -78,6 +78,9 @@
     wget https://github.com/shvchk/padavan-wireguard-client/raw/main/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
+    > [!WARNING]  
+    > Рекомендую проверить скрипт [client.sh](client.sh) перед запуском. Это хорошая практика перед запуском любого кода на вашем устройстве, особенно удалённого кода.
+
 1. Сделайте его исполняемым:
 
     ```sh

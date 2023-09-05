@@ -76,6 +76,9 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
     wget https://github.com/shvchk/padavan-wireguard-client/raw/main/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
+    > [!WARNING]  
+    > I recommend inspecting the [client.sh](client.sh) script before running it. It's a good practice before running any code on your device, especially remote code.
+
 1. Make it executable:
 
     ```sh
