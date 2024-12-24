@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/busybox sh
 set -euo pipefail
 
 log="logger -t wireguard"
@@ -14,6 +14,10 @@ routes_table=$fwmark
 
 filtered_config=""
 filtered_config_file="/tmp/wireguard.${iface}.filtered.conf"
+preup="/tmp/wireguard.${iface}.preup.sh"
+postup="/tmp/wireguard.${iface}.postup.sh"
+predown="/tmp/wireguard.${iface}.predown.sh"
+postdown="/tmp/wireguard.${iface}.postdown.sh"
 client_addr=""
 client_mask=""
 server_addr=""
@@ -74,6 +78,13 @@ parse_config() {
     [ -z "$line" ] ||
     [ "${line:0:1}" = "#" ] && continue
 
+    case "$line" in
+      PreUp*)    echo "$line" | cut -d '=' -f 2- >> "$preup"    ;;
+      PostUp*)   echo "$line" | cut -d '=' -f 2- >> "$postup"   ;;
+      PreDown*)  echo "$line" | cut -d '=' -f 2- >> "$predown"  ;;
+      PostDown*) echo "$line" | cut -d '=' -f 2- >> "$postdown" ;;
+    esac
+
     line="$(echo "$line" | sed 's/ //g')"
     key="$(echo "$line" | cut -d '=' -f 1)"
     val="$(echo "$line" | cut -d '=' -f 2-)"
@@ -99,7 +110,11 @@ parse_config() {
         allowed_ips="$allowed_ips $(get_valid_addrs "$val")"
         ;;
 
-      [*|PrivateKey|PublicKey|PresharedKey|PersistentKeepalive)
+      MTU)
+        mtu="$val"
+        ;;
+
+      \[*|PrivateKey|PublicKey|PresharedKey|PersistentKeepalive|ListenPort)
         add_to_filtered_config "$line"
         ;;
 
@@ -187,6 +202,7 @@ configure_traffic_rules() {
 
 start() {
   $log "Starting"
+  [ -f "$preup" ] && . "$preup"
   ip link show dev "$iface" &> /dev/null && die "'$iface' already exists"
   validate_iface_name "$iface" || die "Invalid interface name"
   parse_config "$config_file"
@@ -199,13 +215,16 @@ start() {
   ip link set $iface up mtu $mtu
 
   configure_traffic_rules enable
+  [ -f "$postup" ] && . "$postup"
 }
 
 stop() {
   $log "Stopping"
+  [ -f "$predown" ] && . "$predown"
   configure_traffic_rules disable
   ip link del $iface
   rm "$filtered_config_file"
+  [ -f "$postdown" ] && . "$postdown"
 }
 
 autostart() {
