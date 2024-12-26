@@ -285,8 +285,6 @@ autostart() {
   esac
 }
 
-trap cleanup EXIT
-
 case "$1" in
   start)
     start
