@@ -32,6 +32,10 @@ die() {
   exit 1
 }
 
+cleanup() {
+  rm -f "$filtered_config_file" "$preup" "$postup" "$predown" "$postdown" || :
+}
+
 wait_online() {
   local i=0
   until ping -c 1 -W 1 $1 &> /dev/null; do
@@ -202,12 +206,13 @@ configure_traffic_rules() {
 
 start() {
   $log "Starting"
-  [ -f "$preup" ] && . "$preup"
   ip link show dev "$iface" &> /dev/null && die "'$iface' already exists"
   validate_iface_name "$iface" || die "Invalid interface name"
+  cleanup
   parse_config "$config_file"
 
   $log "Setting up interface"
+  [ -f "$preup" ] && . "$preup"
   modprobe wireguard
   ip link add $iface type wireguard
   ip addr add $client_addr/$client_mask dev $iface
@@ -223,8 +228,8 @@ stop() {
   [ -f "$predown" ] && . "$predown"
   configure_traffic_rules disable
   ip link del $iface
-  rm "$filtered_config_file"
   [ -f "$postdown" ] && . "$postdown"
+  cleanup
 }
 
 autostart() {
@@ -279,6 +284,8 @@ autostart() {
       ;;
   esac
 }
+
+trap cleanup EXIT
 
 case "$1" in
   start)
