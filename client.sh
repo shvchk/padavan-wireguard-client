@@ -159,7 +159,7 @@ configure_traffic_rules() {
   case "$1" in
     enable)
       ip link show $iface &> /dev/null || { $log "Nonexistent interface $iface"; return 1; }
-      configure_traffic_rules disable
+      configure_traffic_rules disable &> /dev/null
 
       action="-I"
       $log "Setting up traffic rules..."
