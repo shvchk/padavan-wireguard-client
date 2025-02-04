@@ -1,4 +1,4 @@
-<p align="right">English | <a href="README.ru.md">Русский</a></p>
+<p align="right">English | <a href="ru">Русский</a></p>
 
 
 ## WireGuard client for routers with Padavan based firmware
@@ -7,10 +7,10 @@ Single executable file only requiring standard WireGuard config file to work.
 
 ### Prerequisites
 
-1. Firmware with WireGuard support.  
+1. Firmware with WireGuard support.
     E.g. [padavan-ng from Alexey](https://gitlab.com/dm38/padavan-ng), on your router up and running.
 
-1. Ability to run commands on your router.  
+1. Ability to run commands on your router.
     Preferably via SSH, but you could also use router web UI.
 
     <details>
@@ -37,7 +37,7 @@ Single executable file only requiring standard WireGuard config file to work.
       Paste it into your browser's address bar manually and hit Enter, since GitHub doees not allow active links with non-standard protocols.
     </details>
 
-1. Ability to copy files to your router.  
+1. Ability to copy files to your router.
     SFTP is usually used for this, which is based on SSH.
 
     <details>
@@ -76,7 +76,7 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
     wget https://github.com/shvchk/padavan-wireguard-client/raw/main/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
-    > [!WARNING]  
+    > [!WARNING]
     > I recommend inspecting the [client.sh](client.sh) script before running it. It's a good practice before running any code on your device, especially remote code.
 
 1. Make it executable:
@@ -89,7 +89,7 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
 
     Config file name will be used as a WireGuard interface name. E.g. for `wg0.conf` client create `wg0` interface.
 
-    > [!IMPORTANT]  
+    > [!IMPORTANT]
     > File name should only consist of letters, numbers and `_` `=` `+` `.` `-` characters, be less than 16 characters long and end with `.conf`. If directory has multiple config files, first one in alphabetic order will be used.
 
 1. Start WireGuard client:
