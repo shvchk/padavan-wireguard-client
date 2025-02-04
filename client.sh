@@ -25,7 +25,7 @@ server_port=""
 allowed_ips=""
 
 traffic_rules_def_pref=5000
-traffic_rules_suppressor_pref=32751
+traffic_rules_suppressor_pref=30000
 
 die() {
   $log "${1}. Exit."
@@ -168,7 +168,7 @@ configure_traffic_rules() {
 
       if [ $def_route = 1 ]; then
         wg set $iface fwmark $fwmark
-        ip rule add not fwmark $fwmark table $routes_table
+        ip rule add not fwmark $fwmark table $routes_table pref $(( traffic_rules_suppressor_pref + 1 ))
         ip rule add table main suppress_prefixlength 0 pref $traffic_rules_suppressor_pref
         sysctl -q net.ipv4.conf.all.src_valid_mark=1
       else
