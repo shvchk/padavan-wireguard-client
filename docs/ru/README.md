@@ -1,4 +1,4 @@
-<p align="right"><a href="..">English</a> | Русский</p>
+<p align="right"><a href="..#readme">English</a> | Русский</p>
 
 
 ## Клиент WireGuard для роутеров на прошивке Padavan

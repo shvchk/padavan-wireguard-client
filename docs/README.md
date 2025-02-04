@@ -1,4 +1,4 @@
-<p align="right">English | <a href="ru">Русский</a></p>
+<p align="right">English | <a href="ru#readme">Русский</a></p>
 
 
 ## WireGuard client for routers with Padavan based firmware
