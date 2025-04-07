@@ -5,12 +5,13 @@
 
 Single executable file only requiring standard WireGuard config file to work.
 
+
 ### Prerequisites
 
-1. Firmware with WireGuard support.
-    E.g. [padavan-ng from Alexey](https://gitlab.com/dm38/padavan-ng), on your router up and running.
+1. Firmware with WireGuard support.<br>
+    E.g. [padavan-ng from Sergey Hadzhioglu](https://gitlab.com/hadzhioglu/padavan-ng), on your router up and running.
 
-1. Ability to run commands on your router.
+2. Ability to run commands on your router.<br>
     Preferably via SSH, but you could also use router web UI.
 
     <details>
@@ -37,7 +38,7 @@ Single executable file only requiring standard WireGuard config file to work.
       Paste it into your browser's address bar manually and hit Enter, since GitHub doees not allow active links with non-standard protocols.
     </details>
 
-1. Ability to copy files to your router.
+3. Ability to copy files to your router.<br>
     SFTP is usually used for this, which is based on SSH.
 
     <details>
@@ -54,6 +55,7 @@ Single executable file only requiring standard WireGuard config file to work.
       Paste it into your browser's address bar manually and hit Enter, since GitHub doees not allow active links with non-standard protocols.
     </details>
 
+
 ### WireGuard client set up
 
 I will mostly use CLI commands here to remove risk of misinterpretation, but file / directory operations might be as well performed via SFTP, or course.
@@ -64,65 +66,65 @@ I will mostly use CLI commands here to remove risk of misinterpretation, but fil
     mv /etc/storage/wireguard /etc/storage/wireguard.bak
     ```
 
-1. Create `wireguard` directory in `/etc/storage`:
+2. Create `wireguard` directory in `/etc/storage`:
 
     ```sh
     mkdir /etc/storage/wireguard
     ```
 
-1. Copy `client.sh` to it:
+3. Copy `client.sh` to it:
 
     ```sh
     wget https://github.com/shvchk/padavan-wireguard-client/raw/main/client.sh -O /etc/storage/wireguard/client.sh
     ```
 
-    > [!WARNING]
-    > I recommend inspecting the [client.sh](client.sh) script before running it. It's a good practice before running any code on your device, especially remote code.
+> [!WARNING]
+> I recommend inspecting the [client.sh](client.sh) script before running it. It's a good practice before running any code on your device, especially remote code.
 
-1. Make it executable:
+4. Make it executable:
 
     ```sh
     chmod +x /etc/storage/wireguard/client.sh
     ```
 
-1. Copy WireGuard client config file to `/etc/storage/wireguard`
+5. Copy WireGuard client config file to `/etc/storage/wireguard`
 
     Config file name will be used as a WireGuard interface name. E.g. for `wg0.conf` client create `wg0` interface.
 
-    > [!IMPORTANT]
-    > File name should only consist of letters, numbers and `_` `=` `+` `.` `-` characters, be less than 16 characters long and end with `.conf`. If directory has multiple config files, first one in alphabetic order will be used.
+> [!IMPORTANT]
+> File name should only consist of letters, numbers and `_` `=` `+` `.` `-` characters, be less than 16 characters long and end with `.conf`. If directory has multiple config files, first one in alphabetic order will be used.
 
-1. Start WireGuard client:
+6. Start WireGuard client:
 
     ```sh
     /etc/storage/wireguard/client.sh start
     ```
 
-1. Check if internet is working fine on your devices:
+7. Check if internet is working fine on your devices:
 
     ```sh
     ping -c 3 -W 1 1.1.1.1
     ```
 
-1. In case of problems, stop WireGuard client:
+8. In case of problems, stop WireGuard client:
 
     ```sh
     /etc/storage/wireguard/client.sh stop
     ```
 
-1. After you made sure everything is working fine, enable autostart:
+9. After you made sure everything is working fine, enable autostart:
 
     ```sh
     /etc/storage/wireguard/client.sh autostart enable
     ```
 
-1. Save changes:
+10. Save changes:
 
     ```sh
     mtd_storage.sh save
     ```
 
-1. Restart router
+11. Restart router
 
 
 ### Uninstall
